@@ -9,11 +9,11 @@
 	<br>
 	<hr>
 	{{#each rows}}
-	<form action="/user/comment/delete" method="POST">
-	<input type="hidden" name="content_id" value="{{content_id}}">
-	<p>第{{content_id}}条</p>
-	<p>{{username}}</p>
-	<p>{{content}}</p>
+	<form action="/user/todolist/delete" method="POST">
+	<input type="hidden" name="todo_id" value="{{todo_id}}">
+	<p>第{{todo_id}}条</p>
+	<p>{{todo_user}}</p>
+	<p>{{todo_content}}</p>
 	<button type="submit">删除</button>
 	</form>
 	<hr>

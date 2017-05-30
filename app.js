@@ -35,6 +35,9 @@ function md5(data) {
 
 
 //注册
+app.get('/user/sign', (request, response) => {
+    response.render('./user/sign');
+});
 app.post('/user/sign', (request, response) => {
 
     console.log(request.body);
@@ -59,6 +62,9 @@ app.post('/user/sign', (request, response) => {
 
 
 //登录
+app.get('/user/login', (request, response) => {
+    response.render('./user/login');
+});
 app.post('/user/login', (request, response) => {
 
     let username = request.body.username;
@@ -87,54 +93,59 @@ app.post('/user/login', (request, response) => {
 
 
 
-//评论
-app.post('/user/comment/creat', (request, response) => {
+//添加Todo
+app.post('/user/todolist/creat', (request, response) => {
 
     console.log(request.body);
-    let username = request.session.username;
-    let content = request.body.content;
+    let todo_user = request.session.username;
+    let todo_content = request.body.todo_content;
 
-    DB.query('INSERT INTO msg set ?', {
-        username: username,
-        content: content
-    }, (err, rows) => {
+    if (todo_user !== null) {
+        DB.query('INSERT INTO todolist set ?', {
+            todo_user: todo_user,
+            todo_content: todo_content
+        }, (err, rows) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('success');
+                response.redirect('http://localhost:3000/index');
+            }
+        });
+    }else
+    {
+        response.redirect('http://localhost:3000/user/login');
+    }
+
+});
+
+
+// //查看Todolist
+// app.get('/user/todolist/show', (request, response) => {
+
+//     console.log(request.body);
+//     let username = request.session.username;
+
+//     DB.query('SELECT * FROM todolist WHERE todo_status=1 and todo_user = ?', username, (err, rows) => {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             response.render('user/todo.show', {
+//                 rows: rows,
+//                 name: username
+//             });
+//         }
+//     });
+
+// });
+
+//完成Todo
+app.post('/user/todolist/delete', (request, response) => {
+    DB.query('UPDATE todolist SET todo_status=0 WHERE todo_id = ?', request.body.todo_id, (err, rows) => {
         if (err) {
             console.log(err);
         } else {
-            console.log('success');
             response.redirect('http://localhost:3000/index');
-        }
-    });
-
-});
-
-
-//查看我的评论
-app.get('/user/comment/show', (request, response) => {
-
-    console.log(request.body);
-    let username = request.session.username;
-
-    DB.query('SELECT * FROM msg WHERE content_status=1 and username = ?', username, (err, rows) => {
-        if (err) {
-            console.log(err);
-        } else {
-            response.render('user/comment_show', {
-                rows: rows,
-                name: username
-            });
-        }
-    });
-
-});
-
-//删除评论
-app.post('/user/comment/delete', (request, response) => {
-    DB.query('UPDATE msg SET content_status=0 WHERE content_id = ?', request.body.content_id, (err, rows) => {
-        if (err) {
-            console.log(err);
-        } else {
-            response.redirect('http://localhost:3000/user/comment/show');
         }
     });
 });
@@ -146,13 +157,13 @@ app.all('/index', (request, response) => {
     let username = request.session.username;
 
 
-    DB.query('SELECT * FROM msg WHERE content_status = 1', (err, rows) => {
+    DB.query('SELECT * FROM todolist WHERE todo_status = 1', (err, rows) => {
         if (err) {
             console.log(err);
         } else {
             response.render('index', {
                 rows: rows,
-                name: username || 'deafault'
+                name: username || '请登录'
             });
             console.log('success');
         }

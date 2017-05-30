@@ -5,19 +5,15 @@
 	<title>Document</title>
 </head>
 <body>
-<a href="/user/comment/show">{{name}}</a>
-	<p>Hello {{name}}</p>
-	<form action="/user/comment/creat" method="POST">
-		<input type="text" name="content">
-		<button type="submit">Comment</button>
-	</form>
-	<br>
-	<hr>
-	{{#each rows}}
-	<p>{{content_id}}楼</p>
-	<p>{{username}}</p>
-	<p>{{content}}</p>
-	<hr>
-	{{/each}}
-</body>
+<p>Hello {{name}}</p>
+<hr>
+{{#each rows}}
+<form action="/user/todolist/delete" method="POST">
+	<input type="hidden" name="todo_id" value="{{todo_id}}">
+	<p>第{{todo_id}}条</p>
+	<p>{{todo_user}}</p>
+	<p>{{todo_content}}</p>
+	<button type="submit">删除</button>
+</form>
+<hr>{{/each}}</body>
 </html>
